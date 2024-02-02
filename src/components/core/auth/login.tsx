@@ -6,7 +6,6 @@ import z from "zod";
 
 import {
   CardTitle,
-  CardDescription,
   CardHeader,
   CardContent,
   CardFooter,
@@ -42,14 +41,11 @@ export default function Login() {
   }
   return (
     <div className='flex flex-col items-center justify-center'>
-      <Card>
+      <Card className='xl:min-w-[30vw]'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <CardHeader>
               <CardTitle className='text-2xl'>Login</CardTitle>
-              <CardDescription>
-                Enter your email below to login to your account.
-              </CardDescription>
             </CardHeader>
             <CardContent className='space-y-2'>
               <FormField
