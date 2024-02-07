@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import axios from "axios";
 
 import {
   CardTitle,
@@ -21,6 +22,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { saveToken } from "@/actions/auth";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -28,6 +32,16 @@ const loginSchema = z.object({
 });
 
 export default function Login() {
+  const loginMutation = useMutation({
+    mutationFn: (data) => {
+      return axios.post("http://localhost:3001/api/login", data);
+    },
+    onSuccess: (data) => {
+      toast.success("Logged in successfully");
+      saveToken(data.data?.token);
+    },
+  });
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -36,9 +50,14 @@ export default function Login() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    try {
+      loginMutation.mutate(values);
+    } catch (error) {
+      console.error(error);
+    }
   }
+
   return (
     <div className='flex flex-col items-center justify-center'>
       <Card className='xl:min-w-[30vw]'>
